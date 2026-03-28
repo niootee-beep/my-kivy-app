@@ -12,9 +12,12 @@ jobs:
           command: buildozer android debug
           buildozer_version: master
 
+      - name: List files (Để kiểm tra tên APK)
+        run: ls -R bin/
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: my-app-apk
-          path: bin/*.apk
+          path: ./**/bin/*.apk
           
