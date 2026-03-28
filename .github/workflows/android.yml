@@ -8,14 +8,19 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev libmql-dev
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential git python3-dev zip zlib1g-dev libncurses5-dev \
+            libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev \
+            libsqlite3-dev sqlite3 bzip2 libbz2-dev libmql-dev \
+            openjdk-17-jdk-headless
           pip3 install --user --upgrade Cython==0.29.33 buildozer
 
       - name: Build APK with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          buildozer android debug
+          # Lệnh này sẽ tự động chạy và đồng ý mọi yêu cầu từ Buildozer
+          yes | buildozer android debug
         env:
           ACCEPT_SDK_LICENSE: "True"
 
