@@ -12,6 +12,7 @@ android.archs = arm64-v8a, armeabi-v7a
 
 requirements = python3, pygame, random, struct
 
+source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 
-# Không cần sửa phần dưới
+# Các dòng khác có thể để mặc định
