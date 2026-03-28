@@ -11,13 +11,12 @@ jobs:
         with:
           command: buildozer android debug
           buildozer_version: master
-          # Lệnh này bảo GitHub chui vào thư mục con để tìm file
-          workdir: my-kivy-app
+          # Sửa lại đúng định dạng thư mục làm việc ở đây
+          workdir: ./my-kivy-app
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: my-app-apk
-          # Tìm mọi file .apk được tạo ra trong thư mục con
           path: my-kivy-app/bin/*.apk
           
