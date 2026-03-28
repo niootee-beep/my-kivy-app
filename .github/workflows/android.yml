@@ -4,46 +4,17 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Build with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
         with:
-          python-version: '3.10'
-
-      - name: Install System Dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev autoconf-archive automake libtool-bin gettext build-essential
-          pip3 install --upgrade pip
-          pip3 install cython==0.29.37 buildozer
-
-      - name: Install Android SDK tools (Manual Fix)
-        run: |
-          # 1. Tạo thư mục cấu trúc chuẩn cho cmdline-tools
-          mkdir -p $HOME/.buildozer/android-sdk/cmdline-tools
-          
-          # 2. Tải và giải nén SDK Tools chính thức
-          curl -L https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o sdk.zip
-          unzip -q sdk.zip
-          
-          # 3. Di chuyển vào thư mục 'latest' (Buildozer bắt buộc tìm ở đây)
-          mv cmdline-tools $HOME/.buildozer/android-sdk/cmdline-tools/latest
-          
-          # 4. QUAN TRỌNG: Cấp quyền thực thi cho các file bin của SDK
-          chmod +x -R $HOME/.buildozer/android-sdk/cmdline-tools/latest/bin/
-          
-          # 5. Chấp nhận License
-          export PATH=$PATH:$HOME/.buildozer/android-sdk/cmdline-tools/latest/bin
-          yes | sdkmanager --sdk_root=$HOME/.buildozer/android-sdk --licenses
-
-      - name: Build APK with Buildozer
-        run: |
-          # Thêm YES để tự động đồng ý các yêu cầu phát sinh khi build
-          yes | buildozer -v android debug
+          workdir: .
+          buildozer_version: master
         env:
+          # Ép kiểu Java 17 để khớp với Android SDK mới
           JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
 
       - name: Upload APK
