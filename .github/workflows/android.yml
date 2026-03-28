@@ -11,13 +11,12 @@ jobs:
         with:
           command: buildozer android debug
           buildozer_version: master
-
-      - name: List files (Để kiểm tra tên APK)
-        run: ls -R bin/
+          # Chỗ này cực kỳ quan trọng: trỏ vào thư mục chứa code của bạn
+          workdir: my-kivy-app 
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: my-app-apk
-          path: ./**/bin/*.apk
+          path: ./**/*.apk
           
