@@ -15,4 +15,6 @@ requirements = python3, pygame, random, struct
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 
-# Các dòng khác có thể để mặc định
+# Thêm 2 dòng dưới đây
+android.accept_sdk_license = True
+android.build_tools = 33.0.0
