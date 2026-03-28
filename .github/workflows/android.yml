@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04  # Sử dụng 22.04 ổn định hơn cho Buildozer hiện tại
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -13,32 +13,40 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Buildozer dependencies
+      - name: Install System Dependencies
         run: |
           sudo apt update
           sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev autoconf-archive automake libtool-bin gettext build-essential
           pip3 install --upgrade pip
           pip3 install cython==0.29.37 buildozer
 
-      # MẸO QUAN TRỌNG: Cài đặt SDK thủ công để Buildozer không bị rối đường dẫn
-      - name: Install Android SDK tools
+      - name: Install Android SDK tools (Manual Fix)
         run: |
-          mkdir -p ~/.buildozer/android-sdk/cmdline-tools
-          cd ~/.buildozer/android-sdk/cmdline-tools
-          curl -o sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-          unzip sdk-tools.zip
-          mv cmdline-tools latest
-          # Chấp nhận license ngay tại đây
-          yes | ./latest/bin/sdkmanager --sdk_root=/home/runner/.buildozer/android-sdk --licenses
+          # Tạo cấu trúc thư mục mà Buildozer yêu cầu
+          mkdir -p $HOME/.buildozer/android-sdk/cmdline-tools
+          
+          # Tải công cụ command-line chính thức từ Google
+          curl -L https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o sdk.zip
+          unzip -q sdk.zip
+          
+          # Chuyển vào thư mục 'latest' để Buildozer không bị lỗi "No such file"
+          mv cmdline-tools $HOME/.buildozer/android-sdk/cmdline-tools/latest
+          
+          # Chấp nhận tất cả các License của Android
+          export PATH=$PATH:$HOME/.buildozer/android-sdk/cmdline-tools/latest/bin
+          yes | sdkmanager --sdk_root=$HOME/.buildozer/android-sdk --licenses
 
       - name: Build APK with Buildozer
         run: |
-          # Thêm YES để tự động đồng ý các yêu cầu trong lúc build
-          yes | buildozer -v android debug
+          # Chạy lệnh build chính thức
+          buildozer -v android debug
+        env:
+          # Giúp Buildozer nhận diện đúng Java 17 trong môi trường GitHub
+          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Point-Hunter
+          name: Point-Hunter-App
           path: bin/*.apk
           
