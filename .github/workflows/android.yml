@@ -13,13 +13,16 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Buildozer dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
-          pip3 install --upgrade pip
-          pip3 install buildozer cython
-
+       - name: Install Buildozer dependencies
+  run: |
+    sudo apt update
+    sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev autoconf-archive automake libtool-bin gettext build-essential
+    pip3 install --upgrade pip
+    pip3 install --upgrade buildozer cython
+      - name: Set locale
+  run: |
+    sudo locale-gen en_US.UTF-8
+    sudo update-locale LANG=en_US.UTF-8
       - name: Accept Android SDK licenses
         run: |
           # Chạy Buildozer lần đầu để tải SDK (nếu chưa có)
