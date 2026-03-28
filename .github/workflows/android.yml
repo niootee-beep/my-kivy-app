@@ -11,8 +11,8 @@ jobs:
         with:
           command: buildozer android debug
           buildozer_version: master
-          # TRỎ ĐÚNG VÀO THƯ MỤC CON CHỨA MAIN.PY
-          workdir: ./my-kivy-app 
+          # Chui vào đúng thư mục con chứa code của bạn
+          workdir: ./my-kivy-app
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
