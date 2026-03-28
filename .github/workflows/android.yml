@@ -22,26 +22,28 @@ jobs:
 
       - name: Install Android SDK tools (Manual Fix)
         run: |
-          # Tạo cấu trúc thư mục mà Buildozer yêu cầu
+          # 1. Tạo thư mục cấu trúc chuẩn cho cmdline-tools
           mkdir -p $HOME/.buildozer/android-sdk/cmdline-tools
           
-          # Tải công cụ command-line chính thức từ Google
+          # 2. Tải và giải nén SDK Tools chính thức
           curl -L https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o sdk.zip
           unzip -q sdk.zip
           
-          # Chuyển vào thư mục 'latest' để Buildozer không bị lỗi "No such file"
+          # 3. Di chuyển vào thư mục 'latest' (Buildozer bắt buộc tìm ở đây)
           mv cmdline-tools $HOME/.buildozer/android-sdk/cmdline-tools/latest
           
-          # Chấp nhận tất cả các License của Android
+          # 4. QUAN TRỌNG: Cấp quyền thực thi cho các file bin của SDK
+          chmod +x -R $HOME/.buildozer/android-sdk/cmdline-tools/latest/bin/
+          
+          # 5. Chấp nhận License
           export PATH=$PATH:$HOME/.buildozer/android-sdk/cmdline-tools/latest/bin
           yes | sdkmanager --sdk_root=$HOME/.buildozer/android-sdk --licenses
 
       - name: Build APK with Buildozer
         run: |
-          # Chạy lệnh build chính thức
-          buildozer -v android debug
+          # Thêm YES để tự động đồng ý các yêu cầu phát sinh khi build
+          yes | buildozer -v android debug
         env:
-          # Giúp Buildozer nhận diện đúng Java 17 trong môi trường GitHub
           JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
 
       - name: Upload APK
