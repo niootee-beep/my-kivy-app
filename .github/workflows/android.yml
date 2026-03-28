@@ -20,10 +20,15 @@ jobs:
           pip3 install --upgrade pip
           pip3 install buildozer cython
 
+      - name: Accept Android SDK licenses
+        run: |
+          # Chạy Buildozer lần đầu để tải SDK (nếu chưa có)
+          buildozer android debug || true
+          # Chấp nhận license của Android SDK
+          yes | ~/.buildozer/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+
       - name: Build APK with Buildozer
         run: |
-          # Nếu chưa có file buildozer.spec, bạn có thể tạo bằng lệnh buildozer init
-          # Nhưng tốt nhất hãy commit file buildozer.spec vào repo
           buildozer -v android debug
 
       - name: Upload APK
