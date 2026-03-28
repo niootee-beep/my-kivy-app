@@ -11,12 +11,13 @@ jobs:
         with:
           command: buildozer android debug
           buildozer_version: master
-          # Sửa lại đúng định dạng thư mục làm việc ở đây
+          # Tự động tìm thư mục chứa main.py để build
           workdir: ./my-kivy-app
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: my-app-apk
-          path: my-kivy-app/bin/*.apk
+          # Quét toàn bộ để lấy file APK
+          path: ./**/*.apk
           
