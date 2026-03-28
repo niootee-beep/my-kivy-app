@@ -18,3 +18,4 @@ source.include_exts = py,png,jpg,kv,atlas
 # Thêm 2 dòng dưới đây
 android.accept_sdk_license = True
 android.build_tools = 33.0.0
+android.ndk = 25b
