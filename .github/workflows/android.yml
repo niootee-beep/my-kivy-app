@@ -4,17 +4,27 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          workdir: .
-          buildozer_version: master
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev autoconf-archive automake libtool-bin gettext build-essential libltdl-dev
+          pip3 install --upgrade pip
+          pip3 install cython==0.29.37 buildozer
+
+      - name: Build APK with Buildozer
+        run: |
+          # Dùng lệnh này để Buildozer tự động đồng ý mọi thứ
+          yes | buildozer -v android debug
         env:
-          # Ép kiểu Java 17 để khớp với Android SDK mới
           JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
 
       - name: Upload APK
