@@ -6,10 +6,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build with Buildozer
-        uses: gearnd/buildozer-action@v2
-        with:
-          command: buildozer android debug
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev libmql-dev
+          pip3 install --user --upgrade Cython==0.29.33 buildozer
+
+      - name: Build APK with Buildozer
+        run: |
+          export PATH=$PATH:$HOME/.local/bin
+          buildozer android debug
+        env:
+          ACCEPT_SDK_LICENSE: "True"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
